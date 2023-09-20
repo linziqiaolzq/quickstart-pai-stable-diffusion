@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="计算巢是阿里云开放给企业应用服务商的服务管理平台。服务商能够在计算巢上发布私有化部署服务，为其客户提供云上软件一键部署的能力；同时也支持全托管模式的服务，赋能服务商托管其客户资源。">
+  <title>PAI+NAS搭建AIGC绘画应用部署文档 - Aliyun 计算巢 x Pai-Stable-Diffusion</title>
+
+  <link rel="shortcut icon" href="img/favicon.ico">
+
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  
+
+  
+  
+
+  
+    <script src="search/main.js"></script>
+  
+
+  
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="logo">
+          <img src="./img/logo-2x.png">
+        </div>
+        <div class="nav-list">
+          <ul>
+          
+              <li><a href="#painasaigc">PAI+NAS搭建AIGC绘画应用部署文档</a></li>
+              
+                  <li><a href="#_1">背景说明</a></li>
+                  
+              
+                  <li><a href="#_2">架构说明</a></li>
+                  
+              
+                  <li><a href="#_3">方案实践</a></li>
+                  
+              
+                  <li><a href="#_4">其他功能</a></li>
+                  
+              
+                  <li><a href="#_5">总结</a></li>
+                  
+              
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      
+      <div class="content-inner">        
+        
+        <h1 id="painasaigc">PAI+NAS搭建AIGC绘画应用部署文档</h1>
+<h2 id="_1">背景说明</h2>
+<p>阿里云计算巢提供了Stable Diffusion快速部署及下载自定义模型功能，使用者不需要自己下载代码，不需要自己安装复杂的依赖，不需要了解Git、Python、Docker等技术，只需要在控制台图形界面点击几下鼠标就可以快速启动Stable Diffusion服务进行绘画，非技术同学也能轻松搞定。
+前文<a href="http://t.csdn.cn/0B7tO">Stable Diffusion集群版--计算巢私有化部署方案</a>介绍了如何在计算巢基于ECS快速创建Stable Diffusion，本文基于阿里云机器学习平台（PAI）快速部署Stable Diffusion，底层可自由选择NAS或OSS存储生成的图片。</p>
+<h2 id="_2">架构说明</h2>
+<ul>
+<li>通过计算巢一键创建服务和应用，简化vpc/vswitch/pai/nas/oss创建过程，通过编排控制资源的拉起顺序，完成资源和软件一键部署；</li>
+<li>Stable Diffusion可选择单机版、集群版，提供公网URL给到用户访问；</li>
+<li>部署前可自由选择挂载NAS、OSS，同时支持选择新建/已有挂载设备，方便用户自由选择存储产品；</li>
+<li>部署前可自由选择填入已有/新建VPC。</li>
+</ul>
+<p><img alt="1.jpg" src="1.jpg" /></p>
+<h2 id="_3">方案实践</h2>
+<ol>
+<li>登录<a href="https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-b64f533f24f0498db190">阿里云计算巢控制台</a>，进入 PAI+NAS搭建企业级AIGC绘画应用 服务实例创建页面，填写相关参数，填写完成点击确认订单(确保账号有余额)。</li>
+</ol>
+<p><img alt="2.png" src="2.png" /></p>
+<p>存储挂载配置，可选择使用NAS或OSS，两者二选其一，其中每种存储可以选择是否新建。
+   若选择NAS且选择新建，则无需填写其他参数，默认即可：</p>
+<p><img alt="3.png" src="3.png" /></p>
+<p>若选择NAS且选择不新建，则需要选择文件系统与挂载点：</p>
+<p><img alt="4.png" src="4.png" /></p>
+<p>若选择OSS且选择新建，则无需填写其他参数，默认即可：</p>
+<p><img alt="5.png" src="5.png" /></p>
+<p>若选择OSS且选择不新建，则需要填写OSS的文件路径：</p>
+<p><img alt="6.png" src="6.png" /></p>
+<p>选择可用区、VPC、交换机等内容，若需新建则走默认即可：</p>
+<p><img alt="7.png" src="7.png" /></p>
+<ul>
+<li>参数说明</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数组</th>
+<th>参数项</th>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务实例名称</td>
+<td>N/A</td>
+<td>test</td>
+<td>实例的名称</td>
+</tr>
+<tr>
+<td>地域</td>
+<td>N/A</td>
+<td>华东1（杭州）</td>
+<td>选中服务实例的地域，建议就近选中，以获取更好的网络延时。</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>类型</td>
+<td>标准版</td>
+<td>可选标准版、集群版</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>运行命令</td>
+<td>./webei ……</td>
+<td>标准版与集群版命令不同，默认即可</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>实例数</td>
+<td>1</td>
+<td>实例数量</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>资源组种类</td>
+<td>公共资源组</td>
+<td>可选公共资源组与自定义的资源组</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>实例规格</td>
+<td>ml.gu7i.c16m60.1-gu30</td>
+<td>资源组种类为公共资源组时选择</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>CPU</td>
+<td>1</td>
+<td>资源组种类为非公共资源组时选择</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>Memory</td>
+<td>30000</td>
+<td>资源组种类为非公共资源组时选择</td>
+</tr>
+<tr>
+<td>PAI配置</td>
+<td>GPU</td>
+<td>8</td>
+<td>资源组种类为非公共资源组时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>挂载类型</td>
+<td>NAS</td>
+<td>选择NAS或OSS</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>是否新建NAS</td>
+<td>是</td>
+<td>选择NAS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>NAS源路径</td>
+<td>/</td>
+<td>选择NAS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>NAS挂载路径</td>
+<td>/code/stable-diffusion-webui/data</td>
+<td>选择NAS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>文件系统</td>
+<td>xxx</td>
+<td>选择NAS且不新建NAS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>NAS挂载点</td>
+<td>xxx</td>
+<td>选择NAS且不新建NAS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>是否新建OSS</td>
+<td>是</td>
+<td>选择OSS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>OSS挂载路径</td>
+<td>/code/stable-diffusion-webui/data</td>
+<td>选择OSS时选择</td>
+</tr>
+<tr>
+<td>存储挂载配置</td>
+<td>文件路径</td>
+<td>xxx</td>
+<td>选择OSS且不新建OSS时选择</td>
+</tr>
+<tr>
+<td>可用区配置</td>
+<td>可用区</td>
+<td>可用区I</td>
+<td>不同地域可用区不同</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>是否新建VPC</td>
+<td>是</td>
+<td>若是，计算巢将自动创建VPC和Vswitch，若否，则需要填入已经创建好的VPC和Vswitch</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>专有网络VPC实例ID</td>
+<td>vpc-xxx</td>
+<td>按实际情况，选择专有网络的ID。</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>交换机实例ID</td>
+<td>vsw-xxx</td>
+<td>按实际情况，选择交换机ID。若找不到交换机, 可尝试切换地域和可用区。</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>确认参数后，勾选我已阅读并同意《计算巢服务协议》，点击"立即创建"按钮，本示例以新建NAS与VPC为例：</li>
+</ol>
+<p><img alt="8.png" src="8.png" /></p>
+<p><img alt="9.png" src="9.png" /></p>
+<ol>
+<li>查看部署进度。 点击列表页查看，可以看到刚刚创建的服务实例以及服务部署进度。</li>
+</ol>
+<p><img alt="10.png" src="10.png" /></p>
+<ol>
+<li>访问stable-diffusion 等待状态变为"已部署"后，点击详情，进入对应的服务实例后，可以在页面上点击以访问。</li>
+</ol>
+<p><img alt="11.png" src="11.png" /></p>
+<p>进入服务实例详情页：</p>
+<p><img alt="12.png" src="12.png" /></p>
+<p>点击Endpoint，即可进入下方页面，开始绘画！</p>
+<p><img alt="13.png" src="13.png" /></p>
+<h2 id="_4">其他功能</h2>
+<p>模型下载/插件下载/RDS相关功能 参考单机版功能相同不重复复制了<a href="https://help.aliyun.com/practice_detail/611227#d8e1e0e0c4jaj">如何在阿里云快速启动Stable Diffusion轻松玩转AI绘画_AIGC_实战派_阿里云帮助中心</a>。</p>
+<h2 id="_5">总结</h2>
+<p>本文介绍了通过PAI创建绘画应用Stable Diffusion的详细功能实践，计算巢在私有化部署(cloud op）场景下提供一键部署、高效运维、弹性伸缩等功能，提供详细的报价信息、资源分组、分账展示等功能，方便客户在解决方案类场景下快速部署落地。</p>
+        
+      </div>
+
+      <div class="copyrights">© 2009-2022 Aliyun.com 版权所有</div>
+    </div>
+  </div>
+  
+  <!--
+  MkDocs version      : 1.5.3
+  Docs Build Date UTC : 2023-09-20 09:12:05.385767+00:00
+  -->
+</body>
+</html>
