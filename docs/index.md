@@ -1,4 +1,4 @@
-# PAI+NAS搭建企业级AIGC绘画应用文档
+# PAI+NAS搭建AIGC绘画应用部署文档
 
 ## 背景说明
 
