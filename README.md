@@ -2,7 +2,7 @@
 
 ## 背景说明
 阿里云计算巢提供了Stable Diffusion快速部署及下载自定义模型功能，使用者不需要自己下载代码，不需要自己安装复杂的依赖，不需要了解Git、Python、Docker等技术，只需要在控制台图形界面点击几下鼠标就可以快速启动Stable Diffusion服务进行绘画，非技术同学也能轻松搞定。
-前文Stable Diffusion集群版--计算巢私有化部署方案介绍了如何在计算巢基于ECS快速创建Stable Diffusion，本文基于阿里云机器学习平台（PAI）快速部署Stable Diffusion，底层可自由选择NAS或OSS存储生成的图片。
+前文[Stable Diffusion集群版--计算巢私有化部署方案](http://t.csdn.cn/0B7tO)介绍了如何在计算巢基于ECS快速创建Stable Diffusion，本文基于阿里云机器学习平台（PAI）快速部署Stable Diffusion，底层可自由选择NAS或OSS存储生成的图片。
 ## 架构说明
 - 通过计算巢一键创建服务和应用，简化vpc/vswitch/pai/nas/oss创建过程，通过编排控制资源的拉起顺序，完成资源和软件一键部署；
 - Stable Diffusion可选择单机版、集群版，提供公网URL给到用户访问；
@@ -11,7 +11,7 @@
 ![1.jpg](1.jpg)
 
 ## 方案实践
-1. 登录阿里云计算巢控制台，进入 PAI+NAS搭建企业级AIGC绘画应用 服务实例创建页面，填写相关参数，填写完成点击确认订单(确保账号有余额)。
+1. 登录[阿里云计算巢控制台](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-b64f533f24f0498db190)，进入 PAI+NAS搭建企业级AIGC绘画应用 服务实例创建页面，填写相关参数，填写完成点击确认订单(确保账号有余额)。
 ![2.png](2.png)
 存储挂载配置，可选择使用NAS或OSS，两者二选其一，其中每种存储可以选择是否新建。
 若选择NAS且选择新建，则无需填写其他参数，默认即可：
@@ -63,7 +63,7 @@
 点击Endpoint，即可进入下方页面，开始绘画！
 ![13.png](13.png)
 ## 其他功能
-模型下载/插件下载/RDS相关功能 参考单机版功能相同不重复复制了如何在阿里云快速启动Stable Diffusion轻松玩转AI绘画_AIGC_实战派_阿里云帮助中心
+模型下载/插件下载/RDS相关功能 参考单机版功能相同不重复复制了[如何在阿里云快速启动Stable Diffusion轻松玩转AI绘画_AIGC_实战派_阿里云帮助中心](https://help.aliyun.com/practice_detail/611227#d8e1e0e0c4jaj)。
 ## 总结
 本文介绍了通过PAI创建绘画应用Stable Diffusion的详细功能实践，计算巢在私有化部署(cloud op）场景下提供一键部署、高效运维、弹性伸缩等功能，提供详细的报价信息、资源分组、分账展示等功能，方便客户在解决方案类场景下快速部署落地。
 
