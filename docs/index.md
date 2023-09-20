@@ -1,4 +1,4 @@
-# quickstart-pai-stable-diffusion
+# pai-stable-diffusion服务实例部署文档
 
 ## 背景说明
 
