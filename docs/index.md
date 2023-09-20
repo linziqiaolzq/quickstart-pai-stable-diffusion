@@ -12,7 +12,7 @@
 
 ## 方案实践
 1. 登录[阿里云计算巢控制台](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-b64f533f24f0498db190)，进入 PAI+NAS搭建企业级AIGC绘画应用 服务实例创建页面，填写相关参数，填写完成点击确认订单(确保账号有余额)。
-   ![2.png](docs/2.png)
+   ![2.png](2.png)
    存储挂载配置，可选择使用NAS或OSS，两者二选其一，其中每种存储可以选择是否新建。
    若选择NAS且选择新建，则无需填写其他参数，默认即可：
    ![3.png](3.png)
